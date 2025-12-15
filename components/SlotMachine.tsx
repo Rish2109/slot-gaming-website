@@ -82,7 +82,7 @@ export default function SlotMachine({ game }: SlotMachineProps) {
   };
 
   const symbols = result?.symbols || game.symbols.slice(0, game.reelCount).map(s => s.id);
-  const hasWin = result ? result.totalWin > 0 : false;
+  const hasWin: boolean = result ? result.totalWin > 0 : false;
 
   return (
     <div className="max-w-4xl mx-auto">
