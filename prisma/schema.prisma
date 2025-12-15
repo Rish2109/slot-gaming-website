@@ -1,0 +1,56 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String        @id @default(cuid())
+  email           String        @unique
+  passwordHash    String
+  coins           Int           @default(10000)
+  lastDailyClaim  DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  playHistory     PlayHistory[]
+
+  @@map("users")
+}
+
+model Game {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  slug        String        @unique
+  description String
+  thumbnail   String
+  reelCount   Int           @default(3)
+  symbolsPerReel Int        @default(3)
+  symbols     String        // JSON string of symbols configuration
+  paytable    String        // JSON string of paytable
+  minBet      Int           @default(10)
+  maxBet      Int           @default(100)
+  createdAt   DateTime      @default(now())
+  playHistory PlayHistory[]
+
+  @@map("games")
+}
+
+model PlayHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  gameId    String
+  bet       Int
+  win       Int
+  result    String   // JSON string of spin result
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id])
+  game      Game     @relation(fields: [gameId], references: [id])
+
+  @@map("play_history")
+}
