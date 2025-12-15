@@ -131,7 +131,7 @@ export default function SlotMachine({ game }: SlotMachineProps) {
               result={symbolId}
               isSpinning={isSpinning}
               delay={index * 0.1}
-              isWinning={hasWin}
+              isWinning={hasWin || undefined}
             />
           ))}
         </div>

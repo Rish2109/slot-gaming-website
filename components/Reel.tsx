@@ -8,7 +8,7 @@ interface ReelProps {
   result: string;
   isSpinning: boolean;
   delay: number;
-  isWinning?: boolean | null;
+  isWinning?: boolean;
 }
 
 export default function Reel({ symbols, result, isSpinning, delay, isWinning }: ReelProps) {
