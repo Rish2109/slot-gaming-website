@@ -36,13 +36,10 @@ export default function RegisterPage() {
     try {
       await register(email, password);
       toast.success('Account created! Welcome to SlotMaster! 🎰');
-      setTimeout(() => {
-        router.push('/games');
-      }, 500);
+      window.location.href = '/';
     } catch (err: any) {
       setError(err.message || 'Registration failed');
       toast.error(err.message || 'Registration failed');
-    } finally {
       setIsLoading(false);
     }
   };

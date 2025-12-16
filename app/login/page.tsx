@@ -23,14 +23,11 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      toast.success('Welcome back! Redirecting...');
-      setTimeout(() => {
-        router.push('/games');
-      }, 500);
+      toast.success('Welcome back!');
+      window.location.href = '/';
     } catch (err: any) {
       setError(err.message || 'Login failed');
       toast.error(err.message || 'Login failed');
-    } finally {
       setIsLoading(false);
     }
   };
