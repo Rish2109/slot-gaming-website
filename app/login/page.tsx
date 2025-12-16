@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Mail, Lock, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -22,9 +23,13 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.push('/games');
+      toast.success('Welcome back! Redirecting...');
+      setTimeout(() => {
+        router.push('/games');
+      }, 500);
     } catch (err: any) {
       setError(err.message || 'Login failed');
+      toast.error(err.message || 'Login failed');
     } finally {
       setIsLoading(false);
     }

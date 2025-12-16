@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
 import { Mail, Lock, Loader2, Gift } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -34,9 +35,13 @@ export default function RegisterPage() {
 
     try {
       await register(email, password);
-      router.push('/games');
+      toast.success('Account created! Welcome to SlotMaster! 🎰');
+      setTimeout(() => {
+        router.push('/games');
+      }, 500);
     } catch (err: any) {
       setError(err.message || 'Registration failed');
+      toast.error(err.message || 'Registration failed');
     } finally {
       setIsLoading(false);
     }
