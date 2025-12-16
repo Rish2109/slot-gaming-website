@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface WalletState {
   balance: number;
@@ -12,11 +13,13 @@ interface WalletState {
   addWinnings: (amount: number) => void;
 }
 
-export const useWalletStore = create<WalletState>((set, get) => ({
-  balance: 0,
-  lastClaim: null,
-  canClaim: false,
-  isLoading: false,
+export const useWalletStore = create<WalletState>()(
+  persist(
+    (set, get) => ({
+      balance: 0,
+      lastClaim: null,
+      canClaim: false,
+      isLoading: false,
 
   setBalance: (balance) => set({ balance }),
 
@@ -61,13 +64,24 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     }
   },
 
-  deductBet: (amount) =>
-    set((state) => ({
-      balance: Math.max(0, state.balance - amount),
-    })),
+      deductBet: (amount) =>
+        set((state) => ({
+          balance: Math.max(0, state.balance - amount),
+        })),
 
-  addWinnings: (amount) =>
-    set((state) => ({
-      balance: state.balance + amount,
-    })),
-}));
+      addWinnings: (amount) =>
+        set((state) => ({
+          balance: state.balance + amount,
+        })),
+    }),
+    {
+      name: 'wallet-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        balance: state.balance,
+        lastClaim: state.lastClaim,
+        canClaim: state.canClaim,
+      }),
+    }
+  )
+);

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import Cookies from 'js-cookie';
 
 interface User {
@@ -19,10 +20,12 @@ interface AuthState {
   updateCoins: (coins: number) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      isLoading: true,
 
   setUser: (user) =>
     set({
@@ -108,8 +111,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  updateCoins: (coins: number) =>
-    set((state) => ({
-      user: state.user ? { ...state.user, coins } : null,
-    })),
-}));
+      updateCoins: (coins: number) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, coins } : null,
+        })),
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+      }),
+    }
+  )
+);
